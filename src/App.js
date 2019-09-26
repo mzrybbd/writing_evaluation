@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import { Layout, Avatar, Button, Card } from 'antd';
 import { WriteForm } from './Form'
+import DetailResult from './detail'
 const { Header, Content } = Layout;
 
 function App() {
@@ -17,10 +18,12 @@ function App() {
             </span>
           </div>
         </Header>
-        <Content style={{ padding: '0 10%', backgroundColor: '#f7f7f7', height: '100vh', marginTop: '64px' }}>
-          <Card style={{ width: '100%' }}>
+        <Content style={{ padding: '0 12%', backgroundColor: '#f7f7f7', height: '100vh', marginTop: '64px' }}>
+          <Card style={{ width: '100%',marginTop: '20px' }}>
+            <h2>智能批阅</h2>
           <WriteForm />
           </Card>
+          <DetailResult />
         </Content>
       </Layout>
     </div >

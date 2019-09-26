@@ -4,6 +4,7 @@ import {
   Input,
   Select,
 } from 'antd';
+import axios from 'axios';
 import React, { Component } from 'react';
 const { TextArea } = Input
 const { Option } = Select
@@ -19,6 +20,37 @@ export const WriteForm = Form.create({ name: 'update_form' })(
         confirmLoading: false
       }
     }
+
+    handleEvaluation = e => {
+      e.preventDefault();
+      this.props.form.validateFields((err, values) => {
+        console.log('Received values of form: ', values);
+        Object.keys(values).forEach((item) => {
+          sessionStorage.setItem(item, values[item]);
+        })
+        console.log(sessionStorage)
+        axios({
+          url: '/api/',
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          data: {
+            vendor: 'gaosieduTest',
+            vendorKey: 'seGOD0633E141dJYUdC',
+            grade: this.state.grade.indexOf(values.grade) + 1,
+            arcitleType: this.state.arcitleType.indexOf(values.arcitleType) + 1,
+            content: values.content,
+            title: values.title
+          }
+        });
+      })
+    }
+
+    handleReset = () => {
+      this.props.form.resetFields();
+    };
 
     render() {
       const { getFieldDecorator } = this.props.form
@@ -39,18 +71,18 @@ export const WriteForm = Form.create({ name: 'update_form' })(
       const submitFormLayout = {
         wrapperCol: {
           xs: { span: 24, offset: 0 },
-          sm: { span: 10, offset: 8 },
+          sm: { span: 10, offset: 7 },
         },
       };
 
       const grades = grade.map((item, index) =>
-        <Option key={index} value={index + 1}>{item}</Option>
+        <Option key={index} value={index} > {item}</Option >
       );
       const arcitleTypes = arcitleType.map((item, index) =>
-        <Option key={index} value={index + 1}>{item}</Option>
+        <Option key={index} value={index}>{item}</Option>
       )
       return (
-        <Form {...formItemLayout} style={{margin: '0 auto'}}>
+        <Form {...formItemLayout} style={{ margin: '0 auto' }}>
           <Form.Item label="年级">
             {getFieldDecorator('grade', {
               initialValue: '一年级',
@@ -81,19 +113,19 @@ export const WriteForm = Form.create({ name: 'update_form' })(
           </Form.Item>
           <Form.Item label="内容">
             {getFieldDecorator('content', {
-               rules: [{ required: true, message: '请输入作文内容' }],
+              rules: [{ required: true, message: '请输入作文内容' }],
             })(
               <TextArea
                 placeholder="输入作文内容"
-                rows={10}
+                rows={8}
               />,
             )}
           </Form.Item>
           <Form.Item {...submitFormLayout}>
-          <Button type="primary" onClick={this.state.updateTemplate} loading={this.state.confirmLoading}>
+            <Button type="primary" onClick={this.handleEvaluation} loading={this.state.confirmLoading}>
               开始批改
           </Button>
-            <Button onClick={this.state.updateTemplate}>
+            <Button onClick={this.handleReset} style={{ marginLeft: '15px' }}>
               重置
           </Button>
           </Form.Item>
