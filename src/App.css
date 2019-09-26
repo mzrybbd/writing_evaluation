@@ -18,6 +18,21 @@
   color: white;
 }
 
+.logo {
+  width: 120px;
+  height: 35px;
+  margin: 16px 28px 16px 0;
+  float: left;
+  background: url('https://res-static.gaosiedu.com/www/static/img/logo.a749978.png') center center no-repeat;
+  background-size: 100%  100%;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
 .App-link {
   color: #09d3ac;
 }
