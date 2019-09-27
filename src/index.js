@@ -6,7 +6,6 @@ import App from './App';
 import WriteingEvaluation from './Evaluation';
 
 import * as serviceWorker from './serviceWorker';
-import axios from 'axios';
 ReactDOM.render((
   <Router>
     <Route path="/Evaluation" component={WriteingEvaluation} />

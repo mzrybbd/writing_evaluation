@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { Layout, Avatar, Button, Card } from 'antd';
+import { Layout, Avatar, Card } from 'antd';
 import { WriteForm } from './Form'
 
 const { Header, Content } = Layout;
@@ -25,7 +25,6 @@ function App() {
         </Content>
       </Layout>
     </div >
-
   )
 }
 

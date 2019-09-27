@@ -31,12 +31,8 @@ export const WriteForm = Form.create({ name: 'update_form' })(
         console.log(sessionStorage)
         
         axios({
-          url: '/api/',
+          url: '/api',
           method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
           data: {
             vendor: 'gaosieduTest',
             vendorKey: 'seGOD0633E141dJYUdC',
