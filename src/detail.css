@@ -1,0 +1,90 @@
+.card1 {
+  margin-top: 20px;
+  height: 48px;
+}
+
+.card2 {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #1F2D3D;
+}
+
+.card1 .ant-card-body {
+  padding: 10px;
+  height: 48px;
+}
+
+.text-primary {
+  color: #007bff !important;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-left: 24px;
+  font-weight: 400;
+}
+
+.title span {
+  color: #007bff !important;
+}
+
+.machineScoreText,
+.remark {
+  width: 50%;
+  float: left
+}
+
+.line {
+  color: #ebebeb;
+  margin-top: 24px;
+  margin-bottom: 10px;
+}
+
+.score .ant-progress-text {
+  font-size: 56px;
+}
+
+.score {
+  width: 100%;
+  margin: 0 auto;
+  height: 100%;
+}
+
+.total_remark,
+.total_score {
+  font-weight: 600;
+}
+
+.machineScoreText .score {
+  border-right: 1px solid #ebebeb;
+}
+
+.card3 .ant-card {
+  width: 32%;
+}
+
+.title {
+  color: rgb(67, 192, 251);
+}
+
+.expand_tips {
+  color: #17a2b8 !important
+}
+
+.card {
+  border: 1px solid rgba(0, 0, 0, .125);
+  border-radius: .25rem;
+  margin-top: 10px;
+  padding: 20px;
+  font-size: 16px;
+  font-family: 'Helvetica Neue','Microsoft YaHei';
+}
+.expand_source{
+  color: #56ad5a;
+}
+.zn_source {
+  color: black;
+}

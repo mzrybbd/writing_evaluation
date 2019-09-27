@@ -1,20 +1,31 @@
 import {
   Button,
-  Form,
-  Input,
-  Select,
+  message,
+  Card,
+  Divider,
+  Progress,
+  Rate,
+  Tabs,
+  Table
 } from 'antd';
 import axios from 'axios';
 import React, { Component } from 'react';
-const { TextArea } = Input
-const { Option } = Select
+import './detail.css';
+const { TabPane } = Tabs;
 
+const Star = props => {
+  return (
+    <div className="star_item">
+      <span className="star_name">{props.name}</span>
+      <Progress percent={props.rate} strokeColor={props.color} />
+    </div>)
+}
 export default class DetailResult extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      arcitleType: ['记叙文', '说明文', '议论文', '应用文'],
-      grade: ['一年级', '二年级', '三年级', '四年级', '五年级', '六年级', '初一', '初二', '初三', '高一', '高二', '高三'],
+      arcitleTypes: ['记叙文', '说明文', '议论文', '应用文'],
+      grades: ['一年级', '二年级', '三年级', '四年级', '五年级', '六年级', '初一', '初二', '初三', '高一', '高二', '高三'],
       confirmLoading: false,
       res: {},
       result: {
@@ -23,9 +34,13 @@ export default class DetailResult extends Component {
             {
               "detail": "<p><p>解释：指礼节上应该有来有往。现也指以同样的态度或做法回答对方。<br/><p>出处：《礼记·曲礼上》：“礼尚往来。往而不来，非礼也；来而不往，亦非礼也。”<br/><p>例句：雯青顾全同僚的面子，也只好～，勉强敷衍。（清·曾朴《孽海花》第六回）</p>",
               "tips": "文章出现成语[礼尚往来]"
-            }
+            },
+            {
+              "detail": "<p><p>解释：指礼节上应该有来有往。现也指以同样的态度或做法回答对方。<br/><p>出处：《礼记·曲礼上》：“礼尚往来。往而不来，非礼也；来而不往，亦非礼也。”<br/><p>例句：雯青顾全同僚的面子，也只好～，勉强敷衍。（清·曾朴《孽海花》第六回）</p>",
+              "tips": "文章出现成语[礼尚往来]"
+            },
           ],
-          "category3Score": 0,
+          "category3Score": 50,
           "paragraphMarkEntityList": [
             {
               "pNo": 1,
@@ -62,28 +77,28 @@ export default class DetailResult extends Component {
           ],
           "remark": "<p style=\"text-indent:2em;\">文章内容与题目无关，结构散乱，辞不意逮，不符合文体要求。</p>",
           "category1ItemList": [
-            0,
-            0,
+            34,
+            45,
             0,
             0,
             0
           ],
-          "category1Score": 0,
-          "score": 0,
+          "category1Score": 80,
+          "score": 80,
           "category3ItemList": [
-            0,
-            0,
+            30,
+            40,
             0,
             0
           ],
           "weightScore": 0,
           "category2ItemList": [
-            0,
-            0,
+            100,
+            20,
             0,
             0
           ],
-          "category2Score": 0,
+          "category2Score": 90,
           "suggestions": [
             {
               "scope": "paragraph",
@@ -181,41 +196,144 @@ export default class DetailResult extends Component {
         "code": "000",
         "success": true,
         "message": "作文批改成功"
-      }
+      },
+      grade: sessionStorage.getItem('grade'),
+      arcitleType: sessionStorage.getItem('arcitleType'),
+      title: sessionStorage.getItem('title'),
+      content: sessionStorage.getItem('content')
     }
 
   }
+  callback = (key) => {
+    console.log(key);
+  }
   componentDidMount() {
-    let grade = sessionStorage.getItem('grade')
-    let arcitleType = sessionStorage.getItem('arcitleType')
-    let content = sessionStorage.getItem('content')
-    let title = sessionStorage.getItem('title')
-    axios({
-      url: '/api/',
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      data: {
-        vendor: 'gaosieduTest',
-        vendorKey: 'seGOD0633E141dJYUdC',
-        grade,
-        arcitleType,
-        content,
-        title
-      }
-    }).then(res => {
-      if (res.result && res.code === '000') {
-        this.setState({
-          res: this.state.result
-        })
-      }
-    }).catch(e => {
-      console.log(e.msg)
-    });
+    const { grade, arcitleType, content, title, grades, arcitleTypes } = this.state
+    let gradeId = grades.indexOf(grade)
+    let arcitleTypeId = arcitleTypes.indexOf(arcitleType)
+    // console.log(grade,arcitleType,content,title)
+    this.setState({
+      res: this.state.result
+    })
+    console.log(this.state.result)
+
   }
   render() {
-    return <p>hhhh</p>
+    const { grade, arcitleType, title, result } = this.state
+    const { enhances, category3Score, paragraphMarkEntityList, paragraphRemarkEntityList, remark, category1ItemList, category2ItemList, category3ItemList, category1Score, category2Score, score, suggestions, ideation, summaryReportEvaluationResult } = result.evaluation
+    const columns = [
+      {
+        title: '文章闪光点',
+        dataIndex: 'advantage',
+        key: 'advantage',
+        render: text => <div className="CollocationError_count">{text}</div>,
+      },
+      {
+        title: '精彩段点评',
+        dataIndex: 'shortcoming',
+        key: 'age',
+        render: text => <div className="OtherError_count">{text}</div>,
+      },
+    ]
+    const data = [
+      {
+        key: '1',
+        advantage: paragraphMarkEntityList.length,
+        shortcoming: paragraphRemarkEntityList.length,
+      }]
+    const expand = enhances.map((item,index) => {return (
+      <div className="card" key={index}>
+        <div className="expand_tips">{item.tips}</div>
+        <div dangerouslySetInnerHTML={{ __html: item.detail }} className="expand_source"></div>
+      </div>
+    )})
+    return (
+      <div>
+        <Card className="card1">
+          <div>
+            <span className="text-primary">
+              [{grade}][{arcitleType}]
+          </span>
+            <span className="title">
+              标题：
+            <span>[{title}]</span>
+            </span>
+          </div>
+        </Card>
+        <Card className="card2">
+          <div>
+            <div className="machineScoreText">
+              <div className="total_score">[满分100] 得分</div>
+              <Divider className="line" />
+              <Progress type="dashboard" className="score" percent={score} strokeWidth={10} width={200} format={(percent, successPercent) => percent} />
+              <Divider type="vertical" /></div>
+            <div className="remark">
+              <div className="total_remark">总评</div>
+              <Divider className="line" />
+              <div dangerouslySetInnerHTML={{ __html: remark }}></div>
+            </div>
+          </div>
+        </Card>
+        <div style={{ display: 'flex', flexDecoration: 'row', justifyContent: 'space-between', marginTop: '10px' }} className="card3">
+          <Card>
+            <div className="categoryCube">
+              <span className="star_title">
+                内容
+                <Rate disabled defaultValue={category1Score / 20} allowHalf className="title" />
+              </span>
+              <span className="star_blue">
+                <Star name="符合题意" rate={category1ItemList[0]} color="rgb(122, 204, 236)" />
+                <Star name="中心突出" rate={category1ItemList[1]} color="rgb(122, 204, 236)" />
+                <Star name="内容充实" rate={category1ItemList[2]} color="rgb(122, 204, 236)" />
+                <Star name="思想健康" rate={category1ItemList[3]} color="rgb(122, 204, 236)" />
+                <Star name="感情真挚" rate={category1ItemList[4]} color="rgb(122, 204, 236)" />
+              </span>
+            </div>
+          </Card>
+          <Card>
+            <div className="categoryCube">
+              <span className="star_title">
+                表达
+                <Rate disabled defaultValue={category2Score / 20} allowHalf className="title" />
+              </span>
+              <span className="star_blue">
+                <Star name="行文规范" rate={category2ItemList[0]} color="rgb(152, 227, 35)" />
+                <Star name="文体符合" rate={category2ItemList[1]} color="rgb(152, 227, 35)" />
+                <Star name="结构严谨" rate={category2ItemList[2]} color="rgb(152, 227, 35)" />
+                <Star name="语言流畅" rate={category2ItemList[3]} color="rgb(152, 227, 35)" />
+              </span>
+            </div>
+          </Card>
+          <Card>
+            <div className="categoryCube">
+              <span className="star_title">
+                发展
+                <Rate disabled defaultValue={category3Score / 20} allowHalf className="title" />
+              </span>
+              <span className="star_blue">
+                <Star name="深刻" rate={category3ItemList[0]} color="#44e97b" />
+                <Star name="丰富" rate={category3ItemList[1]} color="#44e97b" />
+                <Star name="文采" rate={category3ItemList[2]} color="#44e97b" />
+                <Star name="新颖" rate={category3ItemList[3]} color="#44e97b" />
+              </span>
+            </div>
+          </Card>
+        </div>
+        <Card title="作文点评" extra={summaryReportEvaluationResult.characterCount} style={{ width: '100%', marginTop: '10px' }}>
+          <Tabs defaultActiveKey="1" onChange={this.callback}>
+            <TabPane tab="原文点评" key="1">
+              <Table columns={columns} dataSource={data} pagination={false} />
+            </TabPane>
+            <TabPane tab="提升建议" key="2">
+              Content of Tab Pane 2
+             </TabPane>
+            <TabPane tab="拓展学习" key="3">
+              {expand}
+          </TabPane>
+          </Tabs>
+        </Card>
+      </div>
+
+    )
   }
 }

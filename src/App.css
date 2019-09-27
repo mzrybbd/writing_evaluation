@@ -1,6 +1,8 @@
 @import '~antd/dist/antd.css';
 .App {
-  text-align: center;
+  font-family: 'Helvetica Neue','Microsoft YaHei';
+  letter-spacing: .5px;
+  font-size: 18px;
 }
 
 .App-logo {
