@@ -36,7 +36,7 @@ export default class DetailResult extends Component {
               "tips": "文章出现成语[礼尚往来]"
             },
             {
-              "detail": "<p><p>解释：指礼节上应该有来有往。现也指以同样的态度或做法回答对方。<br/><p>出处：《礼记·曲礼上》：“礼尚往来。往而不来，非礼也；来而不往，亦非礼也。”<br/><p>例句：雯青顾全同僚的面子，也只好～，勉强敷衍。（清·曾朴《孽海花》第六回）</p>",
+              "detail": "<p><p><p class=\"zn_source\">原文1：但是，如果反对这宅子的旧主人，怕给</p>解释：指礼节上应该有来有往。现也指以同样的态度或做法回答对方。<br/><p>出处：《礼记·曲礼上》：“礼尚往来。往而不来，非礼也；来而不往，亦非礼也。”<br/><p>例句：雯青顾全同僚的面子，也只好～，勉强敷衍。（清·曾朴《孽海花》第六回）</p>",
               "tips": "文章出现成语[礼尚往来]"
             },
           ],
@@ -177,7 +177,7 @@ export default class DetailResult extends Component {
               "tips": "请检查重复语句。"
             }
           ],
-          "paragraphRemarkEntityList": [],
+          "paragraphRemarkEntityList": [{pNo: 3, remark: "自问自答，突出重点,增强语言气势。运用了因果论证的方法说明事物发生发展的过程，思路较为清晰。"}],
           "ideation": {
             "question": "在把一个简单的材料添枝加叶成一篇文章时，有哪些步骤呢？",
             "answer": "\n\t\t\n\t\t1.找重点，添加情节。拿到素材之后要会找出这个素材的重点部分，并在重点部分添枝加叶。<br/>\n\t\t2.用技巧，描写细节。在添枝加叶的过程中，会巧妙运用所学的写作技巧对事情所发生的环境，对人物的神态、动作、心理活动等细节进行描写。<br/>\n\t\t3.借过渡，巧妙相连。再添加相应内容的同时要注意每个环节之间的连接，使文章语句通顺，并且内容合情合理。\n\t\t\n\t"
@@ -241,12 +241,30 @@ export default class DetailResult extends Component {
         advantage: paragraphMarkEntityList.length,
         shortcoming: paragraphRemarkEntityList.length,
       }]
-    const expand = enhances.map((item,index) => {return (
-      <div className="card" key={index}>
-        <div className="expand_tips">{item.tips}</div>
-        <div dangerouslySetInnerHTML={{ __html: item.detail }} className="expand_source"></div>
-      </div>
-    )})
+    const expand = enhances.map((item, index) => {
+      return (
+        <div className="card" key={index}>
+          <div className="expand_tips">{item.tips}</div>
+          <div dangerouslySetInnerHTML={{ __html: item.detail }} className="expand_source"></div>
+        </div>
+      )
+    })
+    const pNo = paragraphRemarkEntityList.map((item, index) => {
+      return item.pNo
+    })
+    console.log(pNo)
+    const originComment = paragraphMarkEntityList.map((item, index) => {
+      debugger
+      let idx = pNo.indexOf(item.pNo) 
+      console.log(idx)
+      return (
+        <div key={index} className="origin">
+          <div dangerouslySetInnerHTML={{ __html: item.markContent }} className="origin_source"></div>
+          {idx > -1 && <div>段评：<span dangerouslySetInnerHTML={{ __html: paragraphRemarkEntityList[idx].remark}} className="origin_source"></span></div>}
+        </div>
+      )
+    })
+    console.log(originComment)
     return (
       <div>
         <Card className="card1">
@@ -319,17 +337,18 @@ export default class DetailResult extends Component {
             </div>
           </Card>
         </div>
-        <Card title="作文点评" extra={summaryReportEvaluationResult.characterCount} style={{ width: '100%', marginTop: '10px' }}>
+        <Card title="作文点评" extra={`字数：` + summaryReportEvaluationResult.characterCount} style={{ width: '100%', marginTop: '10px' }}>
           <Tabs defaultActiveKey="1" onChange={this.callback}>
             <TabPane tab="原文点评" key="1">
               <Table columns={columns} dataSource={data} pagination={false} />
+              {originComment}
             </TabPane>
             <TabPane tab="提升建议" key="2">
               Content of Tab Pane 2
              </TabPane>
             <TabPane tab="拓展学习" key="3">
               {expand}
-          </TabPane>
+            </TabPane>
           </Tabs>
         </Card>
       </div>
