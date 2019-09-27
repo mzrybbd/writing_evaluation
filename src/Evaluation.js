@@ -1,11 +1,13 @@
 import React from 'react';
+import { Router, Route } from 'react-router'
 import './App.css';
 import { Layout, Avatar, Button, Card } from 'antd';
 import { WriteForm } from './Form'
+import DetailResult from './detail'
+import { Link } from 'react-router-dom'
 
 const { Header, Content } = Layout;
-
-function App() {
+export default function WriteingEvaluation() {
   return (
     <div className="App">
       <Layout>
@@ -14,19 +16,16 @@ function App() {
             <div className="logo" ></div>
             <span style={{ float: 'right' }}>
               <Avatar size="small" src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png" alt="avatar" className="avatar" />
+              <Link to="/" style={{paddingLeft: '15px', fontSize: '16px'}}>[回到首页]</Link>
+              {/* <Route  path="/Evaluation" component={Jsdemoc} />
+              <Button type="link" onClick={back}>[回到首页]</Button> */}
             </span>
           </div>
         </Header>
         <Content style={{ padding: '0 12%', backgroundColor: '#f7f7f7', height: '100%', marginTop: '64px' }}>
-          <Card style={{ width: '100%', marginTop: '20px', height: '100%' }}>
-            <h2 style={{ textAlign: 'center' }}>智能批阅</h2>
-            <WriteForm />
-          </Card>
+          <DetailResult />
         </Content>
       </Layout>
     </div >
-
   )
 }
-
-export default App;

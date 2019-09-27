@@ -29,6 +29,7 @@ export const WriteForm = Form.create({ name: 'update_form' })(
           sessionStorage.setItem(item, values[item]);
         })
         console.log(sessionStorage)
+        
         axios({
           url: '/api/',
           method: 'POST',
@@ -71,7 +72,7 @@ export const WriteForm = Form.create({ name: 'update_form' })(
       const submitFormLayout = {
         wrapperCol: {
           xs: { span: 24, offset: 0 },
-          sm: { span: 10, offset: 7 },
+          sm: { span: 10, offset: 10 },
         },
       };
 

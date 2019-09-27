@@ -254,7 +254,7 @@ export default class DetailResult extends Component {
     })
     console.log(pNo)
     const originComment = paragraphMarkEntityList.map((item, index) => {
-      debugger
+      // debugger
       let idx = pNo.indexOf(item.pNo) 
       console.log(idx)
       return (
