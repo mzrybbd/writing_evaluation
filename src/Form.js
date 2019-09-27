@@ -24,11 +24,11 @@ export const WriteForm = Form.create({ name: 'update_form' })(
     handleEvaluation = e => {
       e.preventDefault();
       this.props.form.validateFields((err, values) => {
-        console.log('Received values of form: ', values);
-        Object.keys(values).forEach((item) => {
-          sessionStorage.setItem(item, values[item]);
-        })
-        console.log(sessionStorage)
+        // console.log('Received values of form: ', values);
+        // Object.keys(values).forEach((item) => {
+        //   sessionStorage.setItem(item, values[item]);
+        // })
+        // console.log(sessionStorage)
         
         axios({
           url: '/api',

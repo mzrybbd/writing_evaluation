@@ -16,7 +16,7 @@ export default function WriteingEvaluation() {
             <div className="logo" ></div>
             <span style={{ float: 'right' }}>
               <Avatar size="small" src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png" alt="avatar" className="avatar" />
-              <Link to="/" style={{paddingLeft: '15px', fontSize: '16px'}}>[回到首页]</Link>
+              <Link to="/home" style={{paddingLeft: '15px', fontSize: '16px'}}>[回到首页]</Link>
               {/* <Route  path="/Evaluation" component={Jsdemoc} />
               <Button type="link" onClick={back}>[回到首页]</Button> */}
             </span>
