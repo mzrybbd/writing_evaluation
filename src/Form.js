@@ -3,9 +3,14 @@ import {
   Form,
   Input,
   Select,
+  message
 } from 'antd';
+import { createHashHistory } from 'history';
+// import { Router,browserHistory,Redirect, Link } from 'react-router'
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import axios from 'axios';
 import React, { Component } from 'react';
+
 const { TextArea } = Input
 const { Option } = Select
 
@@ -24,24 +29,38 @@ export const WriteForm = Form.create({ name: 'update_form' })(
     handleEvaluation = e => {
       e.preventDefault();
       this.props.form.validateFields((err, values) => {
-        // console.log('Received values of form: ', values);
-        // Object.keys(values).forEach((item) => {
-        //   sessionStorage.setItem(item, values[item]);
-        // })
-        // console.log(sessionStorage)
-        
+        console.log(this.state.grade.indexOf(values.grade) + 1)
+        let formData = new FormData()
+        formData.append('vendor', 'gaosieduTest')
+        formData.append('vendorKey', 'seGOD0633E141dJYUdC')
+        formData.append('grade', (this.state.grade.indexOf(values.grade) + 1).toString())
+        formData.append('arcitleType', (this.state.arcitleType.indexOf(values.arcitleType) + 1).toString())
+        formData.append('content', values.content)
+        formData.append('title', values.title)
+        console.log(this.props)
+
         axios({
-          url: '/api',
+          url: '/vendorEvaluationAction_evaluation',
           method: 'POST',
-          data: {
-            vendor: 'gaosieduTest',
-            vendorKey: 'seGOD0633E141dJYUdC',
-            grade: this.state.grade.indexOf(values.grade) + 1,
-            arcitleType: this.state.arcitleType.indexOf(values.arcitleType) + 1,
-            content: values.content,
-            title: values.title
+          data: formData
+        }).then(res => {
+          console.log(res)
+          if(res.data.success && res.data.code==='000'){
+            Object.keys(values).forEach((item) => {
+              sessionStorage.setItem(item, values[item]);
+            })
+            window.location.href = "http://localhost:3000/evaluation"
+            // return <Redirect to="/evaluation" />
+            // return <Link to="/evaluation"></Link>
+            // Route.push('/evaluation')
+            // return <Redirect to={{ pathname: "/evaluation" }} />
+            // this.props..push('/evaluation')
+            // browserHistory.push('/evaluation')
+            // this.props.history.push('/evaluation');
+          }else {
+            message.error(res.message)
           }
-        });
+        })
       })
     }
 

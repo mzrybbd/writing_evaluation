@@ -211,16 +211,41 @@ export default class DetailResult extends Component {
     const { grade, arcitleType, content, title, grades, arcitleTypes } = this.state
     let gradeId = grades.indexOf(grade)
     let arcitleTypeId = arcitleTypes.indexOf(arcitleType)
-    // console.log(grade,arcitleType,content,title)
-    this.setState({
-      res: this.state.result
+    let formData = new FormData()
+    formData.append('vendor', 'gaosieduTest')
+    formData.append('vendorKey', 'seGOD0633E141dJYUdC')
+    formData.append('grade', (grades.indexOf(grade) + 1).toString())
+    formData.append('arcitleType', (arcitleTypes.indexOf(arcitleType) + 1).toString())
+    formData.append('content', content)
+    formData.append('title', title)
+    console.log(this.props)
+
+    axios({
+      url: '/vendorEvaluationAction_evaluation',
+      method: 'POST',
+      data: formData
+    }).then(res => {
+      console.log(res)
+      if(res.data.success && res.data.code==='000'){
+        this.setState({
+          result: res.data
+        })
+      }else {
+        message.error(res.message)
+      }
     })
+    // console.log(grade,arcitleType,content,title)
+
     console.log(this.state.result)
 
   }
   render() {
     const { grade, arcitleType, title, result } = this.state
     const { enhances, category3Score, paragraphMarkEntityList, paragraphRemarkEntityList, remark, category1ItemList, category2ItemList, category3ItemList, category1Score, category2Score, score, suggestions, ideation, summaryReportEvaluationResult } = result.evaluation
+    let rate1 = category1Score/20 - Math.floor(category1Score/20) > 0.5 ? (Math.floor(category1Score/20) + 0.5):Math.floor(category1Score/20)
+    let rate2 = category2Score/20 - Math.floor(category2Score/20) > 0.5 ? (Math.floor(category1Score/20) + 0.5):Math.floor(category2Score/20)
+    let rate3 = category3Score/20 - Math.floor(category3Score/20) > 0.5 ? (Math.floor(category1Score/20) + 0.5):Math.floor(category3Score/20)
+    console.log(rate1, rate2,rate3)
     const columns = [
       {
         title: '文章闪光点',
@@ -297,7 +322,7 @@ export default class DetailResult extends Component {
             <div className="categoryCube">
               <span className="star_title">
                 内容
-                <Rate disabled defaultValue={category1Score / 20} allowHalf className="title" />
+                <Rate disabled defaultValue={Math.round(category1Score/20)} allowHalf className="title" />
               </span>
               <span className="star_blue">
                 <Star name="符合题意" rate={category1ItemList[0]} color="rgb(122, 204, 236)" />
@@ -312,7 +337,7 @@ export default class DetailResult extends Component {
             <div className="categoryCube">
               <span className="star_title">
                 表达
-                <Rate disabled defaultValue={category2Score / 20} allowHalf className="title" />
+                <Rate disabled defaultValue={Math.round(category2Score/20)} allowHalf className="title" />
               </span>
               <span className="star_blue">
                 <Star name="行文规范" rate={category2ItemList[0]} color="rgb(152, 227, 35)" />
@@ -326,7 +351,7 @@ export default class DetailResult extends Component {
             <div className="categoryCube">
               <span className="star_title">
                 发展
-                <Rate disabled defaultValue={category3Score / 20} allowHalf className="title" />
+                <Rate disabled defaultValue={Math.round(category3Score/20)} allowHalf className="title" />
               </span>
               <span className="star_blue">
                 <Star name="深刻" rate={category3ItemList[0]} color="#44e97b" />
@@ -343,9 +368,6 @@ export default class DetailResult extends Component {
               <Table columns={columns} dataSource={data} pagination={false} />
               {originComment}
             </TabPane>
-            <TabPane tab="提升建议" key="2">
-              Content of Tab Pane 2
-             </TabPane>
             <TabPane tab="拓展学习" key="3">
               {expand}
             </TabPane>

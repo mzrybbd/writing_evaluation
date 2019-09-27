@@ -4,12 +4,13 @@ import { BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
 import './index.css';
 import App from './App';
 import WriteingEvaluation from './Evaluation';
-
+// import { withRouter } from 'react-router-dom';
+// export default withRouter(WriteingEvaluation);
 import * as serviceWorker from './serviceWorker';
 ReactDOM.render((
   <Router>
-      <Route path="/evaluation" component={WriteingEvaluation} />
       <Route path="/home" component={App} />
+      <Route path="/evaluation" component={WriteingEvaluation} />
   </Router>
 ), document.getElementById('root'));
 

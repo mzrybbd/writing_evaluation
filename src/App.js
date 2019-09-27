@@ -18,7 +18,7 @@ function App() {
           </div>
         </Header>
         <Content style={{ padding: '0 12%', backgroundColor: '#f7f7f7', height: '100%', marginTop: '64px' }}>
-          <Card style={{ width: '100%', marginTop: '20px', height: '100%' }}>
+          <Card style={{ width: '100%', marginTop: '20px', height: 'calc(100vh - 84px)' }}>
             <h2 style={{ textAlign: 'center' }}>智能批阅</h2>
             <WriteForm />
           </Card>
