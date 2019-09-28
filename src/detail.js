@@ -27,7 +27,9 @@ export default class DetailResult extends Component {
       arcitleTypes: ['记叙文', '说明文', '议论文', '应用文'],
       grades: ['一年级', '二年级', '三年级', '四年级', '五年级', '六年级', '初一', '初二', '初三', '高一', '高二', '高三'],
       confirmLoading: false,
-      res: {},
+      rate1: 0,
+      rate2: 0,
+      rate3: 0,
       result: {
         "evaluation": {
           "enhances": [
@@ -205,7 +207,7 @@ export default class DetailResult extends Component {
   }
 
   componentDidMount() {
-    const { grade, arcitleType, content, title, grades, arcitleTypes } = this.state
+    const { grade, arcitleType, content, title } = this.state
     let formData = new FormData()
     formData.append('vendor', 'gaosieduTest')
     formData.append('vendorKey', 'seGOD0633E141dJYUdC')
@@ -219,23 +221,36 @@ export default class DetailResult extends Component {
       method: 'POST',
       data: formData
     }).then(res => {
-      console.log(res)
       if (res.data.success && res.data.code === '000') {
         this.setState({
           result: res.data
+        })
+        const { category1Score, category2Score, category3Score } = res.data.evaluation
+        let rate1 = this.getRate(category1Score / 20)
+        let rate2 = this.getRate(category2Score / 20)
+        let rate3 = this.getRate(category3Score / 20)
+        this.setState({
+          rate1,
+          rate2,
+          rate3
         })
       } else {
         message.error(res.data.message)
       }
     })
   }
+  getRate(num) {
+    let diff = num - Math.floor(num)
+    if (diff > 0.25) {
+      return Math.floor(num) + 0.5
+    } else {
+      return Math.floor(num)
+    }
+  }
   render() {
-    const { grade, arcitleType, title, result, grades, arcitleTypes, } = this.state
-    const { enhances, category3Score, paragraphMarkEntityList, paragraphRemarkEntityList, remark, category1ItemList, category2ItemList, category3ItemList, category1Score, category2Score, score, suggestions, ideation, summaryReportEvaluationResult } = result.evaluation
-    let rate1 = category1Score / 20 - Math.floor(category1Score / 20) > 0.5 ? (Math.floor(category1Score / 20) + 0.5) : Math.floor(category1Score / 20)
-    let rate2 = category2Score / 20 - Math.floor(category2Score / 20) > 0.5 ? (Math.floor(category2Score / 20) + 0.5) : Math.floor(category2Score / 20)
-    let rate3 = category3Score / 20 - Math.floor(category3Score / 20) > 0.5 ? (Math.floor(category3Score / 20) + 0.5) : Math.floor(category3Score / 20)
-    console.log(rate1, rate2, rate3)
+    const { grade, arcitleType, title, result, grades, arcitleTypes, rate1, rate2, rate3 } = this.state
+    const { enhances, category3Score, paragraphMarkEntityList, paragraphRemarkEntityList, remark, category1ItemList, category2ItemList, category3ItemList, category1Score, category2Score, score, summaryReportEvaluationResult } = result.evaluation
+
     const columns = [
       {
         title: '文章闪光点',
@@ -268,21 +283,20 @@ export default class DetailResult extends Component {
       return item.pNo
     })
     const originComment = paragraphMarkEntityList.map((item, index) => {
-      // debugger
       let idx = pNo.indexOf(item.pNo)
       return (
         <div key={index} className="origin">
-          <div dangerouslySetInnerHTML={{ __html: item.markContent }} className="origin_source"></div>
-          {idx > -1 && <div>段评：<span dangerouslySetInnerHTML={{ __html: paragraphRemarkEntityList[idx].remark }} className="origin_source"></span></div>}
+          <div dangerouslySetInnerHTML={{ __html: item.markContent }}></div>
+          {idx > -1 && <div className="paragraph">段评：<span dangerouslySetInnerHTML={{ __html: paragraphRemarkEntityList[idx].remark }} className="origin_source"></span></div>}
         </div>
       )
     })
     return (
-      <div>
+      <div className="tab1">
         <Card className="card1">
           <div>
             <span className="text-primary">
-              [{grades[grade - 1]}][{arcitleTypes[arcitleType - 1]}]
+              [{grades[grade - 1]}]  [{arcitleTypes[arcitleType - 1]}]
           </span>
             <span className="title">
               标题：
@@ -295,21 +309,23 @@ export default class DetailResult extends Component {
             <div className="machineScoreText">
               <div className="total_score">[满分100] 得分</div>
               <Divider className="line" />
-              <Progress type="dashboard" className="score" percent={score} strokeWidth={10} width={200} format={(percent, successPercent) => percent} />
-              <Divider type="vertical" /></div>
+              <Progress type="dashboard" className="score" percent={score} strokeWidth={10} strokeColor="rgb(67,192,251)" format={(percent, successPercent) => percent} />
+            </div>
             <div className="remark">
               <div className="total_remark">总评</div>
               <Divider className="line" />
-              <div dangerouslySetInnerHTML={{ __html: remark }}></div>
+              <div dangerouslySetInnerHTML={{ __html: remark }} className="thumbnail_artcle"></div>
             </div>
           </div>
         </Card>
         <div style={{ display: 'flex', flexDecoration: 'row', justifyContent: 'space-between', marginTop: '10px' }} className="card3">
           <Card>
             <div className="categoryCube">
-              <span className="star_title">
-                内容
-                <Rate disabled defaultValue={rate1} allowHalf className="title" />
+              <span>
+                <span className="star_title">
+                  内容
+                  </span>
+                <Rate defaultValue={rate1} disabled key={this.state.rate1 ? 'notLoadedYet' : 'loaded'} allowHalf className="rate_title" />
               </span>
               <span className="star_blue">
                 <Star name="符合题意" rate={category1ItemList[0]} color="rgb(122, 204, 236)" />
@@ -322,9 +338,11 @@ export default class DetailResult extends Component {
           </Card>
           <Card>
             <div className="categoryCube">
-              <span className="star_title">
-                表达
-                <Rate disabled defaultValue={rate2} allowHalf className="title" />
+              <span>
+                <span className="star_title">
+                  表达
+                </span>
+                <Rate defaultValue={rate2} disabled allowHalf key={this.state.rate2 ? 'notLoadedYet' : 'loaded'} className="rate_title" />
               </span>
               <span className="star_blue">
                 <Star name="行文规范" rate={category2ItemList[0]} color="rgb(152, 227, 35)" />
@@ -336,9 +354,11 @@ export default class DetailResult extends Component {
           </Card>
           <Card>
             <div className="categoryCube">
-              <span className="star_title">
-                发展
-                <Rate disabled defaultValue={rate3} allowHalf className="title" />
+              <span>
+                <span className="star_title">
+                  发展
+                </span>
+                <Rate defaultValue={rate3} disabled key={this.state.rate3 ? 'notLoadedYet' : 'loaded'} allowHalf className="rate_title" />
               </span>
               <span className="star_blue">
                 <Star name="深刻" rate={category3ItemList[0]} color="#44e97b" />
@@ -349,10 +369,10 @@ export default class DetailResult extends Component {
             </div>
           </Card>
         </div>
-        <Card title="作文点评" extra={`字数：` + summaryReportEvaluationResult.characterCount} style={{ width: '100%', marginTop: '10px' }}>
-          <Tabs defaultActiveKey="1">
+        <Card title="作文点评" extra={`字数：` + summaryReportEvaluationResult.characterCount} style={{ width: '100%', marginTop: '10px' }} className="card4">
+          <Tabs defaultActiveKey="1" className="tab" size="large">
             <TabPane tab="原文点评" key="1">
-              <Table columns={columns} dataSource={data} pagination={false} />
+              <Table columns={columns} dataSource={data} pagination={false} bordered align="center"/>
               {originComment}
             </TabPane>
             <TabPane tab="拓展学习" key="3">
