@@ -1,8 +1,6 @@
 import React from 'react';
-import { Router, Route } from 'react-router'
 import './App.css';
 import { Layout, Avatar, Button, Card } from 'antd';
-import { WriteForm } from './Form'
 import DetailResult from './detail'
 import { Link } from 'react-router-dom'
 
@@ -17,8 +15,6 @@ export default function WriteingEvaluation() {
             <span style={{ float: 'right' }}>
               <Avatar size="small" src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png" alt="avatar" className="avatar" />
               <Link to="/home" style={{paddingLeft: '15px', fontSize: '16px'}}>[回到首页]</Link>
-              {/* <Route  path="/Evaluation" component={Jsdemoc} />
-              <Button type="link" onClick={back}>[回到首页]</Button> */}
             </span>
           </div>
         </Header>

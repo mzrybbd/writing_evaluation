@@ -177,7 +177,7 @@ export default class DetailResult extends Component {
               "tips": "请检查重复语句。"
             }
           ],
-          "paragraphRemarkEntityList": [{pNo: 3, remark: "自问自答，突出重点,增强语言气势。运用了因果论证的方法说明事物发生发展的过程，思路较为清晰。"}],
+          "paragraphRemarkEntityList": [{ pNo: 3, remark: "自问自答，突出重点,增强语言气势。运用了因果论证的方法说明事物发生发展的过程，思路较为清晰。" }],
           "ideation": {
             "question": "在把一个简单的材料添枝加叶成一篇文章时，有哪些步骤呢？",
             "answer": "\n\t\t\n\t\t1.找重点，添加情节。拿到素材之后要会找出这个素材的重点部分，并在重点部分添枝加叶。<br/>\n\t\t2.用技巧，描写细节。在添枝加叶的过程中，会巧妙运用所学的写作技巧对事情所发生的环境，对人物的神态、动作、心理活动等细节进行描写。<br/>\n\t\t3.借过渡，巧妙相连。再添加相应内容的同时要注意每个环节之间的连接，使文章语句通顺，并且内容合情合理。\n\t\t\n\t"
@@ -202,23 +202,17 @@ export default class DetailResult extends Component {
       title: sessionStorage.getItem('title'),
       content: sessionStorage.getItem('content')
     }
+  }
 
-  }
-  callback = (key) => {
-    console.log(key);
-  }
   componentDidMount() {
     const { grade, arcitleType, content, title, grades, arcitleTypes } = this.state
-    let gradeId = grades.indexOf(grade)
-    let arcitleTypeId = arcitleTypes.indexOf(arcitleType)
     let formData = new FormData()
     formData.append('vendor', 'gaosieduTest')
     formData.append('vendorKey', 'seGOD0633E141dJYUdC')
-    formData.append('grade', (grades.indexOf(grade) + 1).toString())
-    formData.append('arcitleType', (arcitleTypes.indexOf(arcitleType) + 1).toString())
+    formData.append('grade', grade)
+    formData.append('arcitleType', arcitleType)
     formData.append('content', content)
     formData.append('title', title)
-    console.log(this.props)
 
     axios({
       url: '/vendorEvaluationAction_evaluation',
@@ -226,26 +220,22 @@ export default class DetailResult extends Component {
       data: formData
     }).then(res => {
       console.log(res)
-      if(res.data.success && res.data.code==='000'){
+      if (res.data.success && res.data.code === '000') {
         this.setState({
           result: res.data
         })
-      }else {
-        message.error(res.message)
+      } else {
+        message.error(res.data.message)
       }
     })
-    // console.log(grade,arcitleType,content,title)
-
-    console.log(this.state.result)
-
   }
   render() {
-    const { grade, arcitleType, title, result } = this.state
+    const { grade, arcitleType, title, result, grades, arcitleTypes, } = this.state
     const { enhances, category3Score, paragraphMarkEntityList, paragraphRemarkEntityList, remark, category1ItemList, category2ItemList, category3ItemList, category1Score, category2Score, score, suggestions, ideation, summaryReportEvaluationResult } = result.evaluation
-    let rate1 = category1Score/20 - Math.floor(category1Score/20) > 0.5 ? (Math.floor(category1Score/20) + 0.5):Math.floor(category1Score/20)
-    let rate2 = category2Score/20 - Math.floor(category2Score/20) > 0.5 ? (Math.floor(category1Score/20) + 0.5):Math.floor(category2Score/20)
-    let rate3 = category3Score/20 - Math.floor(category3Score/20) > 0.5 ? (Math.floor(category1Score/20) + 0.5):Math.floor(category3Score/20)
-    console.log(rate1, rate2,rate3)
+    let rate1 = category1Score / 20 - Math.floor(category1Score / 20) > 0.5 ? (Math.floor(category1Score / 20) + 0.5) : Math.floor(category1Score / 20)
+    let rate2 = category2Score / 20 - Math.floor(category2Score / 20) > 0.5 ? (Math.floor(category2Score / 20) + 0.5) : Math.floor(category2Score / 20)
+    let rate3 = category3Score / 20 - Math.floor(category3Score / 20) > 0.5 ? (Math.floor(category3Score / 20) + 0.5) : Math.floor(category3Score / 20)
+    console.log(rate1, rate2, rate3)
     const columns = [
       {
         title: '文章闪光点',
@@ -277,25 +267,22 @@ export default class DetailResult extends Component {
     const pNo = paragraphRemarkEntityList.map((item, index) => {
       return item.pNo
     })
-    console.log(pNo)
     const originComment = paragraphMarkEntityList.map((item, index) => {
       // debugger
-      let idx = pNo.indexOf(item.pNo) 
-      console.log(idx)
+      let idx = pNo.indexOf(item.pNo)
       return (
         <div key={index} className="origin">
           <div dangerouslySetInnerHTML={{ __html: item.markContent }} className="origin_source"></div>
-          {idx > -1 && <div>段评：<span dangerouslySetInnerHTML={{ __html: paragraphRemarkEntityList[idx].remark}} className="origin_source"></span></div>}
+          {idx > -1 && <div>段评：<span dangerouslySetInnerHTML={{ __html: paragraphRemarkEntityList[idx].remark }} className="origin_source"></span></div>}
         </div>
       )
     })
-    console.log(originComment)
     return (
       <div>
         <Card className="card1">
           <div>
             <span className="text-primary">
-              [{grade}][{arcitleType}]
+              [{grades[grade - 1]}][{arcitleTypes[arcitleType - 1]}]
           </span>
             <span className="title">
               标题：
@@ -322,7 +309,7 @@ export default class DetailResult extends Component {
             <div className="categoryCube">
               <span className="star_title">
                 内容
-                <Rate disabled defaultValue={Math.round(category1Score/20)} allowHalf className="title" />
+                <Rate disabled defaultValue={rate1} allowHalf className="title" />
               </span>
               <span className="star_blue">
                 <Star name="符合题意" rate={category1ItemList[0]} color="rgb(122, 204, 236)" />
@@ -337,7 +324,7 @@ export default class DetailResult extends Component {
             <div className="categoryCube">
               <span className="star_title">
                 表达
-                <Rate disabled defaultValue={Math.round(category2Score/20)} allowHalf className="title" />
+                <Rate disabled defaultValue={rate2} allowHalf className="title" />
               </span>
               <span className="star_blue">
                 <Star name="行文规范" rate={category2ItemList[0]} color="rgb(152, 227, 35)" />
@@ -351,7 +338,7 @@ export default class DetailResult extends Component {
             <div className="categoryCube">
               <span className="star_title">
                 发展
-                <Rate disabled defaultValue={Math.round(category3Score/20)} allowHalf className="title" />
+                <Rate disabled defaultValue={rate3} allowHalf className="title" />
               </span>
               <span className="star_blue">
                 <Star name="深刻" rate={category3ItemList[0]} color="#44e97b" />
@@ -363,7 +350,7 @@ export default class DetailResult extends Component {
           </Card>
         </div>
         <Card title="作文点评" extra={`字数：` + summaryReportEvaluationResult.characterCount} style={{ width: '100%', marginTop: '10px' }}>
-          <Tabs defaultActiveKey="1" onChange={this.callback}>
+          <Tabs defaultActiveKey="1">
             <TabPane tab="原文点评" key="1">
               <Table columns={columns} dataSource={data} pagination={false} />
               {originComment}

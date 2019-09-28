@@ -29,38 +29,39 @@ export const WriteForm = Form.create({ name: 'update_form' })(
     handleEvaluation = e => {
       e.preventDefault();
       this.props.form.validateFields((err, values) => {
-        console.log(this.state.grade.indexOf(values.grade) + 1)
-        let formData = new FormData()
-        formData.append('vendor', 'gaosieduTest')
-        formData.append('vendorKey', 'seGOD0633E141dJYUdC')
-        formData.append('grade', (this.state.grade.indexOf(values.grade) + 1).toString())
-        formData.append('arcitleType', (this.state.arcitleType.indexOf(values.arcitleType) + 1).toString())
-        formData.append('content', values.content)
-        formData.append('title', values.title)
-        console.log(this.props)
+        if (!err) {
+          console.log('form', values)
+          let formData = new FormData()
+          formData.append('vendor', 'gaosieduTest')
+          formData.append('vendorKey', 'seGOD0633E141dJYUdC')
+          formData.append('grade', (values.grade).toString())
+          formData.append('arcitleType', (values.arcitleType).toString())
+          formData.append('content', values.content)
+          formData.append('title', values.title)
 
-        axios({
-          url: '/vendorEvaluationAction_evaluation',
-          method: 'POST',
-          data: formData
-        }).then(res => {
-          console.log(res)
-          if(res.data.success && res.data.code==='000'){
-            Object.keys(values).forEach((item) => {
-              sessionStorage.setItem(item, values[item]);
-            })
-            window.location.href = "http://localhost:3000/evaluation"
-            // return <Redirect to="/evaluation" />
-            // return <Link to="/evaluation"></Link>
-            // Route.push('/evaluation')
-            // return <Redirect to={{ pathname: "/evaluation" }} />
-            // this.props..push('/evaluation')
-            // browserHistory.push('/evaluation')
-            // this.props.history.push('/evaluation');
-          }else {
-            message.error(res.message)
-          }
-        })
+          axios({
+            url: '/vendorEvaluationAction_evaluation',
+            method: 'POST',
+            data: formData
+          }).then(res => {
+            console.log(res)
+            if (res.data.success && res.data.code === '000') {
+              Object.keys(values).forEach((item) => {
+                sessionStorage.setItem(item, values[item]);
+              })
+              window.location.href = "http://localhost:3000/evaluation"
+              // return <Redirect to="/evaluation" />
+              // return <Link to="/evaluation"></Link>
+              // Route.push('/evaluation')
+              // return <Redirect to={{ pathname: "/evaluation" }} />
+              // this.props..push('/evaluation')
+              // browserHistory.push('/evaluation')
+              // this.props.history.push('/evaluation');
+            } else {
+              message.error(res.data.message)
+            }
+          })
+        }
       })
     }
 
@@ -74,12 +75,11 @@ export const WriteForm = Form.create({ name: 'update_form' })(
 
       const formItemLayout = {
         labelCol: {
-          xs: { span: 24 },
-          sm: { span: 5 },
+          sm: { span: 24 },
+          md: { span: 5 },
         },
         wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 20 },
+          sm: { span: 24 },
           md: { span: 16 },
         },
       };
@@ -92,16 +92,16 @@ export const WriteForm = Form.create({ name: 'update_form' })(
       };
 
       const grades = grade.map((item, index) =>
-        <Option key={index} value={index} > {item}</Option >
+        <Option key={index} value={index + 1} > {item}</Option >
       );
       const arcitleTypes = arcitleType.map((item, index) =>
-        <Option key={index} value={index}>{item}</Option>
+        <Option key={index} value={index + 1}>{item}</Option>
       )
       return (
         <Form {...formItemLayout} style={{ margin: '0 auto' }}>
           <Form.Item label="年级">
             {getFieldDecorator('grade', {
-              initialValue: '一年级',
+              initialValue: 1,
               rules: [{ required: true, message: '请选择年级' }],
             })(
               <Select>
@@ -111,7 +111,7 @@ export const WriteForm = Form.create({ name: 'update_form' })(
           </Form.Item>
           <Form.Item label="文体">
             {getFieldDecorator('arcitleType', {
-              initialValue: '记叙文',
+              initialValue: 1,
               rules: [{ required: true, message: '请选择文体' }],
             })(
               <Select>
