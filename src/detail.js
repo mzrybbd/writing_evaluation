@@ -1,5 +1,4 @@
 import {
-  Button,
   message,
   Card,
   Divider,
@@ -250,7 +249,7 @@ export default class DetailResult extends Component {
   }
   render() {
     const { grade, arcitleType, title, result, grades, arcitleTypes, rate1, rate2, rate3 } = this.state
-    const { enhances, category3Score, paragraphMarkEntityList, paragraphRemarkEntityList, remark, category1ItemList, category2ItemList, category3ItemList, category1Score, category2Score, score, summaryReportEvaluationResult } = result.evaluation
+    const { enhances, paragraphMarkEntityList, paragraphRemarkEntityList, remark, category1ItemList, category2ItemList, category3ItemList, score, summaryReportEvaluationResult } = result.evaluation
 
     let count = 0
     let advatages = paragraphMarkEntityList.map(item => {

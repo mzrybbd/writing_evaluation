@@ -5,9 +5,6 @@ import {
   Select,
   message
 } from 'antd';
-import { createHashHistory } from 'history';
-// import { Router,browserHistory,Redirect, Link } from 'react-router'
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import axios from 'axios';
 import React, { Component } from 'react';
 

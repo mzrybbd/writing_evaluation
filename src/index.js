@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import WriteingEvaluation from './Evaluation';
-// import { withRouter } from 'react-router-dom';
-// export default withRouter(WriteingEvaluation);
+
 import * as serviceWorker from './serviceWorker';
 ReactDOM.render((
   <Router>
