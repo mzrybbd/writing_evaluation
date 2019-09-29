@@ -14,10 +14,11 @@ import './detail.css';
 const { TabPane } = Tabs;
 
 const Star = props => {
+  let status = false
   return (
     <div className="star_item">
       <span className="star_name">{props.name}</span>
-      <Progress percent={props.rate} strokeColor={props.color} />
+        <Progress percent={props.rate} strokeColor={props.color} strokeWidth={12} showInfo={status} />
     </div>)
 }
 export default class DetailResult extends Component {
@@ -325,7 +326,7 @@ export default class DetailResult extends Component {
                 <span className="star_title">
                   内容
                   </span>
-                <Rate defaultValue={rate1} disabled key={this.state.rate1 ? 'notLoadedYet' : 'loaded'} allowHalf className="rate_title" />
+                <Rate defaultValue={rate1} size="large" disabled key={this.state.rate1 ? 'notLoadedYet' : 'loaded'} allowHalf className="rate_title" />
               </span>
               <span className="star_blue">
                 <Star name="符合题意" rate={category1ItemList[0]} color="rgb(122, 204, 236)" />
@@ -372,7 +373,7 @@ export default class DetailResult extends Component {
         <Card title="作文点评" extra={`字数：` + summaryReportEvaluationResult.characterCount} style={{ width: '100%', marginTop: '10px' }} className="card4">
           <Tabs defaultActiveKey="1" className="tab" size="large">
             <TabPane tab="原文点评" key="1">
-              <Table columns={columns} dataSource={data} pagination={false} bordered align="center"/>
+              <Table columns={columns} dataSource={data} pagination={false} bordered align="center" />
               {originComment}
             </TabPane>
             <TabPane tab="拓展学习" key="3">
