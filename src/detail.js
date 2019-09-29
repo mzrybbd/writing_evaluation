@@ -18,7 +18,7 @@ const Star = props => {
   return (
     <div className="star_item">
       <span className="star_name">{props.name}</span>
-        <Progress percent={props.rate} strokeColor={props.color} strokeWidth={12} showInfo={status} />
+      <Progress percent={props.rate} strokeColor={props.color} strokeWidth={12} showInfo={status} />
     </div>)
 }
 export default class DetailResult extends Component {
@@ -252,6 +252,13 @@ export default class DetailResult extends Component {
     const { grade, arcitleType, title, result, grades, arcitleTypes, rate1, rate2, rate3 } = this.state
     const { enhances, category3Score, paragraphMarkEntityList, paragraphRemarkEntityList, remark, category1ItemList, category2ItemList, category3ItemList, category1Score, category2Score, score, summaryReportEvaluationResult } = result.evaluation
 
+    let count = 0
+    let advatages = paragraphMarkEntityList.map(item => {
+      return item.markContent
+    })
+    let str = advatages.join('');
+    let reg = new RegExp('markno', 'g')
+    count = str.match(reg) ? str.match(reg).length : 0
     const columns = [
       {
         title: '文章闪光点',
@@ -269,7 +276,7 @@ export default class DetailResult extends Component {
     const data = [
       {
         key: '1',
-        advantage: paragraphMarkEntityList.length,
+        advantage: count,
         shortcoming: paragraphRemarkEntityList.length,
       }]
     const expand = enhances.map((item, index) => {

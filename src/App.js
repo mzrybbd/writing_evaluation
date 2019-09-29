@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="App">
       <Layout>
-        <Header style={{ position: 'fixed', zIndex: 1, width: '100%', background: '#fff', boxShadow: '0 2px 4px 0 rgba(192,204,218,.3)', padding: '0 10%' }}>
+        <Header style={{ position: 'fixed', zIndex: 1, width: '100%', background: '#fff', boxShadow: '0 2px 4px 0 rgba(192,204,218,.3)'}} className="header3">
           <div className="header-main">
             <div className="logo" ></div>
             <span style={{ float: 'right' }}>
@@ -17,7 +17,7 @@ function App() {
             </span>
           </div>
         </Header>
-        <Content style={{ padding: '0 12%', backgroundColor: '#f7f7f7', height: '100%', marginTop: '64px' }}>
+        <Content style={{ backgroundColor: '#f7f7f7', marginTop: '64px' }} className="header4">
           <Card style={{ width: '100%', marginTop: '20px', height: '100%' }}>
             <h2 style={{ textAlign: 'center' }}>智能批阅</h2>
             <WriteForm />

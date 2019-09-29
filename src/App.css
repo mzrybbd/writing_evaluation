@@ -1,13 +1,15 @@
 @import '~antd/dist/antd.css';
+
 .App {
   letter-spacing: .5px;
   font-size: 18px;
   background: #f7f7f7;
   color: #1F2D3D;
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
+
 body {
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 .App-logo {
@@ -31,7 +33,7 @@ body {
   margin: 16px 28px 16px 0;
   float: left;
   background: url('https://res-static.gaosiedu.com/www/static/img/logo.a749978.png') center center no-repeat;
-  background-size: 100%  100%;
+  background-size: 100% 100%;
 }
 
 .avatar {
@@ -42,4 +44,49 @@ body {
 
 .App-link {
   color: #09d3ac;
+}
+
+.header1 {
+  padding: 0 calc((100% - 1200px) / 2);
+}
+
+.header2 {
+  padding: 0 calc((100% - 1200px) / 2);
+}
+
+.header3 {
+  padding: 0 calc((100% - 1200px) / 2);
+}
+
+.header4 {
+  padding: 0 calc((100% - 1200px) / 2);
+}
+
+@media screen and (max-width: 1200px) {
+  .header1 {
+    padding: 0 4.5%;
+  }
+
+  .header2 {
+    padding: 0 4%;
+  }
+
+}
+
+@media screen and (max-width: 1500px) {
+  .header3 {
+    padding: 0 10%;
+  }
+
+  .header4 {
+    padding: 0 12%;
+  }
+}
+
+.header4 .ant-card-body {
+  height: 100%;
+}
+
+body {
+  background-color: rgb(247, 247, 247)
 }

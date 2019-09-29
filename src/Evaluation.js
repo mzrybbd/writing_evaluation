@@ -9,7 +9,7 @@ export default function WriteingEvaluation() {
   return (
     <div className="App">
       <Layout>
-        <Header style={{ position: 'fixed', zIndex: 1, width: '100%', background: '#fff', boxShadow: '0 2px 4px 0 rgba(192,204,218,.3)', padding: '0 4.5%', maxWidth: ''}}>
+        <Header style={{ position: 'fixed', zIndex: 1, width: '100%', background: '#fff', boxShadow: '0 2px 4px 0 rgba(192,204,218,.3)'}} className="header1">
           <div className="header-main">
             <div className="logo" ></div>
             <span style={{ float: 'right' }}>
@@ -18,7 +18,7 @@ export default function WriteingEvaluation() {
             </span>
           </div>
         </Header>
-        <Content style={{ padding: '0 5%', backgroundColor: '#f7f7f7', height: '100%', marginTop: '64px' }}>
+        <Content className="header2" style={{ backgroundColor: '#f7f7f7', height: '100%', marginTop: '64px' }}>
           <DetailResult />
         </Content>
       </Layout>
