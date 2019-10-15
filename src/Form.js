@@ -3,7 +3,9 @@ import {
   Form,
   Input,
   Select,
-  message
+  message,
+  Upload,
+  Icon
 } from 'antd';
 import axios from 'axios';
 import React, { Component } from 'react';
@@ -69,6 +71,60 @@ export const WriteForm = Form.create({ name: 'update_form' })(
     render() {
       const { getFieldDecorator } = this.props.form
       const { grade, arcitleType } = this.state
+      const { form } = this.props
+      const fileprops = {
+        accept: 'image/*',
+        method: 'POST',
+        name: 'imageBase64',
+        beforeUpload: file => {
+          console.log('fasd', file, 'rew', file.__proto__)
+          const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+          if (!isJpgOrPng) {
+            message.error('只能上传PNG或JPG格式');
+          }
+          const isLt2M = file.size / 1024 / 1024 < 10;
+          if (!isLt2M) {
+            message.error('图片大小不能超过2M，建议在1M内');
+          }
+          return isJpgOrPng && isLt2M;
+        },
+        customRequest: info => {//手动上传
+          var reader = new FileReader();
+          const formData = new FormData();
+          if (!!form.file && form.file.fileList) {
+            if (form.file.fileList.length >= 1) {
+              let file = form.file.fileList[form.file.fileList.length - 1]
+              formData.append('imageBase64', file.originFileObj)
+            }
+          }
+          if (info.file) {
+            reader.readAsDataURL(info.file);
+          }
+          let base64head = ''
+          reader.onloadend = function (e) {
+            base64head = reader.result;
+            console.log('last', base64head)
+            console.log(reader, base64head)
+            formData.append('imageBase64', base64head.replace(/^data:image\/\w+;base64,/, ""));//名字和后端接口名字对应
+            // formData.append('url', 'https://storage.aixuexi.com/u/9dzMrFDE843');//名字和后端接口名字对应
+            formData.append('vendor', 'gaosieduTest')
+            formData.append('vendorKey', 'seGOD0633E141dJYUdC')
+            axios({
+              url: '/ocrGatewayAction_ocr',
+              method: 'POST',
+              data: formData
+            }).then(res => {
+              if (res.data.success && res.data.code === '000') {
+                form.setFieldsValue({ title: res.data.title || '' })
+                form.setFieldsValue({ content: res.data.content || '' })
+                console.log(form.title, form.content)
+              } else {
+                message.error(res.data.message)
+              }
+            })
+          }
+        }
+      }
 
       const formItemLayout = {
         labelCol: {
@@ -114,6 +170,15 @@ export const WriteForm = Form.create({ name: 'update_form' })(
               <Select>
                 {arcitleTypes}
               </Select>,
+            )}
+          </Form.Item>
+          <Form.Item label="图片识别">
+            {getFieldDecorator('file')(
+              <Upload {...fileprops} fileList={this.state.fileList} key={Math.random()}>
+                <Button>
+                  <Icon type="upload" /> 上传
+              </Button>
+              </Upload>
             )}
           </Form.Item>
           <Form.Item label="标题">

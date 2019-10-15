@@ -256,7 +256,7 @@ export default class DetailResult extends Component {
       return item.markContent
     })
     let str = advatages.join('');
-    let reg = new RegExp('markno', 'g')
+    let reg = new RegExp('btnShowAdvantage', 'g')
     count = str.match(reg) ? str.match(reg).length : 0
     const columns = [
       {

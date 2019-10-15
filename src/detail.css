@@ -87,6 +87,32 @@
   font-weight: 600;
 }
 
+@media screen and (max-width: 785px) {
+  .machineScoreText,.remark {
+    float: none !important;
+    display: block;
+    width: 100% !important;
+  }
+  .machineScoreText .score {
+    border: none !important;
+    border-bottom: none !important;
+  }
+  .thumbnail_artcle {
+    padding: 0 2px !important;
+  }
+  .total_remark {
+    padding-left: 0 !important;
+  }
+  .card3{
+    display: flex;
+    flex-direction: column !important;
+  }
+  .card3 .ant-card {
+    width: 100% !important;
+    margin-top:10px;
+  }
+} 
+
 .total_remark {
   padding-left: 10%;
 }
