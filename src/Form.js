@@ -9,7 +9,7 @@ import {
 } from 'antd';
 import axios from 'axios';
 import React, { Component } from 'react';
-
+import History from './history'
 const { TextArea } = Input
 const { Option } = Select
 
@@ -29,7 +29,6 @@ export const WriteForm = Form.create({ name: 'update_form' })(
       e.preventDefault();
       this.props.form.validateFields((err, values) => {
         if (!err) {
-          console.log('form', values)
           let formData = new FormData()
           formData.append('vendor', 'gaosieduTest')
           formData.append('vendorKey', 'seGOD0633E141dJYUdC')
@@ -43,17 +42,19 @@ export const WriteForm = Form.create({ name: 'update_form' })(
             method: 'POST',
             data: formData
           }).then(res => {
-            console.log(res)
             if (res.data.success && res.data.code === '000') {
               Object.keys(values).forEach((item) => {
                 sessionStorage.setItem(item, values[item]);
               })
-              window.location.href = "http://localhost:3000/evaluation"
+              // History.push({'pathname': '/evaluation'});
+              History.push('/evaluation')
+              // createBrowserHistory().push()
+              // window.location.href = "http://10.38.4.74:3000/evaluation"
               // return <Redirect to="/evaluation" />
               // return <Link to="/evaluation"></Link>
               // Route.push('/evaluation')
               // return <Redirect to={{ pathname: "/evaluation" }} />
-              // this.props..push('/evaluation')
+              // this.props.push('/evaluation')
               // browserHistory.push('/evaluation')
               // this.props.history.push('/evaluation');
             } else {
@@ -68,6 +69,21 @@ export const WriteForm = Form.create({ name: 'update_form' })(
       this.props.form.resetFields();
     };
 
+    handleOcr = (formData, form) => {
+      axios({
+        url: '/ocrGatewayAction_ocr',
+        method: 'POST',
+        data: formData
+      }).then(res => {
+        if (res.data.success && res.data.code === '000') {
+          message.success('识别成功！')
+          form.setFieldsValue({ title: res.data.title || '' })
+          form.setFieldsValue({ content: res.data.content || '' })
+        } else {
+          message.error(res.data.message)
+        }
+      })
+    }
     render() {
       const { getFieldDecorator } = this.props.form
       const { grade, arcitleType } = this.state
@@ -77,47 +93,39 @@ export const WriteForm = Form.create({ name: 'update_form' })(
         method: 'POST',
         name: 'imageBase64',
         beforeUpload: file => {
-          console.log('fasd', file, 'rew', file.__proto__)
           const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
           if (!isJpgOrPng) {
             message.error('只能上传PNG或JPG格式');
           }
-          const isLt2M = file.size / 1024 / 1024 < 10;
+          const isLt2M = file.size / 1024 / 1024 < 5;
           if (!isLt2M) {
-            message.error('图片大小不能超过2M，建议在1M内');
+            message.error('图片大小不能超过5M，建议在1M内');
           }
           return isJpgOrPng && isLt2M;
         },
         customRequest: info => {//手动上传
           var reader = new FileReader();
           const formData = new FormData();
-          if (!!form.file && form.file.fileList) {
-            if (form.file.fileList.length >= 1) {
-              let file = form.file.fileList[form.file.fileList.length - 1]
-              formData.append('imageBase64', file.originFileObj)
-            }
-          }
           if (info.file) {
             reader.readAsDataURL(info.file);
           }
           let base64head = ''
           reader.onloadend = function (e) {
             base64head = reader.result;
-            console.log('last', base64head)
-            console.log(reader, base64head)
             formData.append('imageBase64', base64head.replace(/^data:image\/\w+;base64,/, ""));//名字和后端接口名字对应
             // formData.append('url', 'https://storage.aixuexi.com/u/9dzMrFDE843');//名字和后端接口名字对应
             formData.append('vendor', 'gaosieduTest')
             formData.append('vendorKey', 'seGOD0633E141dJYUdC')
+            message.loading('图片文字识别中', 2)
             axios({
               url: '/ocrGatewayAction_ocr',
               method: 'POST',
               data: formData
             }).then(res => {
               if (res.data.success && res.data.code === '000') {
+                message.success('识别成功！')
                 form.setFieldsValue({ title: res.data.title || '' })
                 form.setFieldsValue({ content: res.data.content || '' })
-                console.log(form.title, form.content)
               } else {
                 message.error(res.data.message)
               }

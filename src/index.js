@@ -1,15 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import WriteingEvaluation from './Evaluation';
-
+import History from './history';
 import * as serviceWorker from './serviceWorker';
 ReactDOM.render((
-  <Router>
-      <Route path="/home" component={App} />
+  <Router history={History}>
+    <Switch>
+      <Route path="/" exact={true} component={App} />
+      <Route path="/home" exact={true} component={App} />
       <Route path="/evaluation" component={WriteingEvaluation} />
+    </Switch>
   </Router>
 ), document.getElementById('root'));
 

@@ -70,6 +70,9 @@ body {
   .header2 {
     padding: 0 4%;
   }
+  .header4 {
+    padding: 0 5% !important;
+  }
 }
 
 
