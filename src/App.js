@@ -11,7 +11,8 @@ function App() {
       <Layout>
         <Header style={{ position: 'fixed', zIndex: 1, width: '100%', background: '#fff', boxShadow: '0 2px 4px 0 rgba(192,204,218,.3)'}} className="header3">
           <div className="header-main">
-            <div className="logo" ></div>
+            {/* <div className="logo" ></div> */}
+            <img className="logo" src="https://res-static.gaosiedu.com/www/static/img/logo.a749978.png"/>
             <span style={{ float: 'right' }}>
               <Avatar size="small" src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png" alt="avatar" className="avatar" />
             </span>
