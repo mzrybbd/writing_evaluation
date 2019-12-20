@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Router, Route, Switch } from 'react-router-dom';
 import './index.css';
 import App from './App';
+import AILogin from './login/login';
 import WriteingEvaluation from './Evaluation';
 import History from './history';
 import * as serviceWorker from './serviceWorker';
@@ -10,6 +11,7 @@ ReactDOM.render((
   <Router history={History}>
     <Switch>
       <Route path="/" exact={true} component={App} />
+      <Route path="/login" exact={true} component={AILogin} />
       <Route path="/home" exact={true} component={App} />
       <Route path="/evaluation" component={WriteingEvaluation} />
     </Switch>

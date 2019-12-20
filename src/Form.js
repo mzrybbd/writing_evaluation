@@ -2,6 +2,8 @@ import { Button, Form, Input, Select, message, Upload, Icon } from "antd";
 import axios from "axios";
 import React, { Component } from "react";
 import History from "./history";
+import Utils from './utils/utils'
+
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -39,41 +41,65 @@ export const WriteForm = Form.create({ name: "update_form" })(
       window.addEventListener("load", () => {
         form.resetFields();
       });
+      let obj = {
+        "token":Utils.getCookie('ai_token'),
+      }
+      const data = Utils.smsCode('ailab.mvp.chineseComposition.login.status')
+      data.bizContent = obj
+      axios({
+        url: `/api`,
+        method: "POST",
+        data: data
+      }).then(response => {
+        let res = response.data
+        if (res.code !== 2000) {
+          message.warning('请先登录')
+          History.push("/login");
+        }
+      });
     }
     handleEvaluation = e => {
       e.preventDefault();
       this.props.form.validateFields((err, values) => {
         if (!err) {
+          this.setState({confirmLoading: true})
           let formData = new FormData();
-          formData.append("vendor", "gaosieduTest");
-          formData.append("vendorKey", "seGOD0633E141dJYUdC");
+          formData.append("vendor", "gaosiedu");
+          formData.append("vendorKey", "gsED12811sDk891fJULdE");
           formData.append("grade", values.grade.toString());
           formData.append("arcitleType", values.arcitleType.toString());
           formData.append("content", values.content);
           formData.append("title", values.title);
-
+          let obj = {
+            "token":Utils.getCookie('ai_token'),
+            "articleType":values.arcitleType.toString() ,
+            "grade": values.grade.toString(),
+            "title": values.title,
+            "content": values.content
+          }
+          const data = Utils.smsCode('ailab.mvp.chineseComposition.correction')
+          data.bizContent = obj
           axios({
-            url: "/vendorEvaluationAction_evaluation",
+            url: `/vendorEvaluationAction_evaluation`,
             method: "POST",
-            data: formData
-          }).then(res => {
-            if (res.data.success && res.data.code === "000") {
+            data: data
+          }).then(response => {
+            let res = response.data
+            this.setState({confirmLoading: true})
+            if (res.code === 2000) {
+              if (res.data.success && res.data.code === "000") {
               Object.keys(values).forEach(item => {
                 sessionStorage.setItem(item, values[item]);
               });
-              // History.push({'pathname': '/evaluation'});
               History.push("/evaluation");
-              // createBrowserHistory().push()
-              // window.location.href = "http://10.38.4.74:3000/evaluation"
-              // return <Redirect to="/evaluation" />
-              // return <Link to="/evaluation"></Link>
-              // Route.push('/evaluation')
-              // return <Redirect to={{ pathname: "/evaluation" }} />
-              // this.props.push('/evaluation')
-              // browserHistory.push('/evaluation')
-              // this.props.history.push('/evaluation');
-            } else {
+            }else{
               message.error(res.data.message);
+            }
+            } else {
+              message.error(res.msg);
+              if(res.code === 5000 && res.msg == 'token expired'){
+                History.push('/login')
+              }
             }
           });
         }
@@ -86,10 +112,12 @@ export const WriteForm = Form.create({ name: "update_form" })(
 
     handleOcr = (formData, form) => {
       axios({
-        url: "/ocrGatewayAction_ocr",
+        url: "/ocrGatewayAction_ocrjsonrequest",
         method: "POST",
         data: formData
-      }).then(res => {
+      }).then(response => {
+        let res = response.data
+        if(res.code === 2000){
         if (res.data.success && res.data.code === "000") {
           message.success("识别成功！");
           form.setFieldsValue({
@@ -104,9 +132,14 @@ export const WriteForm = Form.create({ name: "update_form" })(
                 ? form.getFieldValue("content")
                 : "") + res.data.content || ""
           });
-          console.log(form.getFieldValue("content"));
         } else {
           message.error(res.data.message);
+        }
+        }else{
+          message.error(res.msg);
+          if(res.code === 5000 && res.msg == 'token expired'){
+            History.push('/login')
+          }
         }
       });
     };
@@ -146,37 +179,21 @@ export const WriteForm = Form.create({ name: "update_form" })(
               base64head.replace(/^data:image\/\w+;base64,/, "")
             ); //名字和后端接口名字对应
             // formData.append('url', 'https://storage.aixuexi.com/u/9dzMrFDE843');//名字和后端接口名字对应
-            formData.append("vendor", "gaosieduTest");
-            formData.append("vendorKey", "seGOD0633E141dJYUdC");
+            formData.append("vendor", "gaosieduOcr");
+            formData.append("vendorKey", "gsdOU1916E881deiUao");
+            let obj = {
+              "token":Utils.getCookie('ai_token'),
+              imageBase64: base64head.replace(/^data:image\/\w+;base64,/, "")
+            }
+            const data = Utils.smsCode('ailab.mvp.chineseComposition.ocr')
+            data.bizContent = obj
+
             // message.loading("图片文字识别中", 2);
             message.loading(
               "图片文字识别中...",
               2,
-              handleOcr( formData, form)
+              handleOcr(data, form)
             );
-            // axios({
-            //   url: "/ocrGatewayAction_ocr",
-            //   method: "POST",
-            //   data: formData
-            // }).then(res => {
-            //   if (res.data.success && res.data.code === "000") {
-            //     message.success("识别成功！");
-            //     form.setFieldsValue({
-            //       title:
-            //         (form.getFieldValue("title")
-            //           ? form.getFieldValue("title")
-            //           : "") || res.data.title
-            //     });
-            //     form.setFieldsValue({
-            //       content:
-            //         (form.getFieldValue("content")
-            //           ? form.getFieldValue("content")
-            //           : "") + res.data.content || ""
-            //     });
-            //   } else {
-            //     message.error(res.data.message);
-            //   }
-            // });
           };
         }
       };
@@ -205,11 +222,13 @@ export const WriteForm = Form.create({ name: "update_form" })(
           {item}
         </Option>
       ));
-      const arcitleTypes = arcitleType.map((item, index) => (
-        <Option key={index} value={index + 1}>
+      const arcitleTypes = arcitleType.map((item, index) => {
+        let value = index > 0 ? index + 2 : index + 1
+        return (
+        <Option key={index} value={value}>
           {item}
         </Option>
-      ));
+      )});
       return (
         <Form {...formItemLayout} style={{ margin: "0 auto" }}>
           <Form.Item label="年级">

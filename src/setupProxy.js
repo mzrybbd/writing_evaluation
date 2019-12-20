@@ -1,16 +1,25 @@
 const proxy = require("http-proxy-middleware");
- 
+const targetUrl = 'http://ai.aixuexi.com/gateway '
 module.exports = function(app) {
   app.use(
-    proxy("/ocrGatewayAction_ocr", {
-      target: "http://106.14.113.203:8079",
+    proxy("/ocrGatewayAction_ocrjsonrequest", {
+      target: targetUrl,
       changeOrigin: true
     })
   );
   app.use(
     proxy("/vendorEvaluationAction_evaluation", {
-      target: "http://106.14.113.203:8080",
+      target: targetUrl,
       changeOrigin: true
+    })
+  );
+  app.use(
+    proxy("/api", {
+      target: targetUrl,
+      changeOrigin: true,
+      pathRewrite: {
+        '^api': ''
+      }
     })
   );
 };

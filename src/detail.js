@@ -10,6 +10,9 @@ import {
 import axios from 'axios';
 import React, { Component } from 'react';
 import './detail.css';
+import Utils from './utils/utils'
+import History from "./history";
+
 const { TabPane } = Tabs;
 
 const Star = props => {
@@ -24,8 +27,9 @@ export default class DetailResult extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      arcitleTypes: ['记叙文', '说明文', '议论文', '应用文'],
+      arcitleTypes: ['记叙文', '', '说明文', '议论文', '应用文'],
       grades: ['一年级', '二年级', '三年级', '四年级', '五年级', '六年级', '初一', '初二', '初三', '高一', '高二', '高三'],
+
       confirmLoading: false,
       rate1: 0,
       rate2: 0,
@@ -208,36 +212,69 @@ export default class DetailResult extends Component {
 
   componentDidMount() {
     const { grade, arcitleType, content, title } = this.state
-    let formData = new FormData()
-    formData.append('vendor', 'gaosieduTest')
-    formData.append('vendorKey', 'seGOD0633E141dJYUdC')
-    formData.append('grade', grade)
-    formData.append('arcitleType', arcitleType)
-    formData.append('content', content)
-    formData.append('title', title)
-
+    let token = {
+      "token":Utils.getCookie('ai_token'),
+    }
+    const params = Utils.smsCode('ailab.mvp.chineseComposition.login.status')
+    params.bizContent = token
     axios({
-      url: '/vendorEvaluationAction_evaluation',
-      method: 'POST',
-      data: formData
-    }).then(res => {
-      if (res.data.success && res.data.code === '000') {
-        this.setState({
-          result: res.data
+      url: `/api`,
+      method: "POST",
+      data: params
+    }).then(response => {
+      let res = response.data
+      if (res.code !== 2000) {
+        message.warning('请先登录')
+        History.push("/login");
+      }else{
+        let formData = new FormData()
+        formData.append('vendor', 'gaosiedu')
+        formData.append('vendorKey', 'gsED12811sDk891fJULdE')
+        formData.append('grade', grade)
+        formData.append('arcitleType', arcitleType)
+        formData.append('content', content)
+        formData.append('title', title)
+        let obj = {
+          "token": Utils.getCookie('ai_token'),
+          "articleType": arcitleType,
+          "grade": grade,
+          "title": title,
+          "content": content
+        }
+        const data = Utils.smsCode('ailab.mvp.chineseComposition.correction')
+        data.bizContent = obj
+        axios({
+          url: `/vendorEvaluationAction_evaluation`,
+          data: data,
+          method: 'POST',
+        }).then(response => {
+          let res = response.data
+          if (res.code === 2000) {
+            if (res.data.success && res.data.code === '000') {
+              this.setState({
+                result: res.data
+              })
+              const { category1Score, category2Score, category3Score } = res.data.evaluation
+              let rate1 = this.getRate(category1Score / 20)
+              let rate2 = this.getRate(category2Score / 20)
+              let rate3 = this.getRate(category3Score / 20)
+              this.setState({
+                rate1,
+                rate2,
+                rate3
+              })
+            } else {
+              message.error(res.data.message)
+            }
+          } else {
+            message.error(res.msg);
+            if(res.code === 5000 && res.msg == 'token expired'){
+              History.push('/login')
+            }
+          }
         })
-        const { category1Score, category2Score, category3Score } = res.data.evaluation
-        let rate1 = this.getRate(category1Score / 20)
-        let rate2 = this.getRate(category2Score / 20)
-        let rate3 = this.getRate(category3Score / 20)
-        this.setState({
-          rate1,
-          rate2,
-          rate3
-        })
-      } else {
-        message.error(res.data.message)
       }
-    })
+    });
   }
   getRate(num) {
     let diff = num - Math.floor(num)
